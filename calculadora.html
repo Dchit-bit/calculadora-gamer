@@ -1,0 +1,251 @@
+html<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .calc-wrapper {
+      padding: 3px;
+      border-radius: 16px;
+      background: linear-gradient(45deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+      background-size: 400% 400%;
+      animation: rgbBorda 3s linear infinite;
+    }
+
+    @keyframes rgbBorda {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .calc {
+      background: #0a0a0f;
+      border-radius: 14px;
+      padding: 1.5rem;
+      width: 300px;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #0ff;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px #0ff;
+    }
+
+    .display {
+      background: #050510;
+      border: 1px solid #0ff3;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      text-align: right;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .display-expr { font-size: 11px; color: #0ff5; min-height: 16px; }
+    .display-val  { font-size: 2rem; font-weight: 700; color: #fff; text-shadow: 0 0 20px rgba(0,255,255,0.6); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .btn {
+      border: 1px solid #fff2;
+      background: #111118;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ccc;
+      height: 58px;
+      cursor: pointer;
+      animation: rgbBotao 3s linear infinite;
+    }
+
+    @keyframes rgbBotao {
+      0%   { border-color: #f008; box-shadow: 0 0 6px #f004; }
+      33%  { border-color: #0f08; box-shadow: 0 0 6px #0f04; }
+      66%  { border-color: #0ff8; box-shadow: 0 0 6px #0ff4; }
+      100% { border-color: #f008; box-shadow: 0 0 6px #f004; }
+    }
+
+    .btn:nth-child(1)  { animation-delay: 0s; }
+    .btn:nth-child(2)  { animation-delay: -0.3s; }
+    .btn:nth-child(3)  { animation-delay: -0.6s; }
+    .btn:nth-child(4)  { animation-delay: -0.9s; }
+    .btn:nth-child(5)  { animation-delay: -1.2s; }
+    .btn:nth-child(6)  { animation-delay: -1.5s; }
+    .btn:nth-child(7)  { animation-delay: -1.8s; }
+    .btn:nth-child(8)  { animation-delay: -2.1s; }
+    .btn:nth-child(9)  { animation-delay: -2.4s; }
+    .btn:nth-child(10) { animation-delay: -2.7s; }
+    .btn:nth-child(11) { animation-delay: -0.4s; }
+    .btn:nth-child(12) { animation-delay: -0.8s; }
+    .btn:nth-child(13) { animation-delay: -1.2s; }
+    .btn:nth-child(14) { animation-delay: -1.6s; }
+    .btn:nth-child(15) { animation-delay: -2.0s; }
+    .btn:nth-child(16) { animation-delay: -2.4s; }
+    .btn:nth-child(17) { animation-delay: -2.8s; }
+    .btn:nth-child(18) { animation-delay: -0.5s; }
+    .btn:nth-child(19) { animation-delay: -1.0s; }
+
+    .btn:hover  { background: #1a1a2e; transform: scale(1.08); color: #fff; }
+    .btn:active { transform: scale(0.94); }
+    .btn-op  { color: #0ff; text-shadow: 0 0 8px #0ff; }
+    .btn-ac  { color: #f55; text-shadow: 0 0 8px #f55; }
+    .btn-eq  { background: #0ff2; color: #fff; font-size: 18px; border-color: #0ff8 !important; }
+    .span2   { grid-column: span 2; }
+
+    #historico { margin-top: 1.5rem; width: 300px; }
+    .hist-title { font-size: 10px; letter-spacing: 4px; color: #0ff7; margin-bottom: 0.75rem; }
+    .item {
+      background: #0a0a0f;
+      border: 1px solid #0ff2;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      margin-bottom: 6px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      color: #888;
+    }
+    .item strong { color: #0ff; }
+  </style>
+</head>
+<body>
+
+<div class="calc-wrapper">
+  <div class="calc">
+    <div class="title">◈ CALC.EXE ◈</div>
+    <div class="display">
+      <div class="display-expr" id="expr"></div>
+      <div class="display-val"  id="val">0</div>
+    </div>
+    <div class="grid">
+      <button class="btn btn-ac" onclick="clear_all()">AC</button>
+      <button class="btn btn-op" onclick="toggleSign()">+/−</button>
+      <button class="btn btn-op" onclick="percent()">%</button>
+      <button class="btn btn-op" onclick="setOp('divisao')">÷</button>
+
+      <button class="btn" onclick="digit('7')">7</button>
+      <button class="btn" onclick="digit('8')">8</button>
+      <button class="btn" onclick="digit('9')">9</button>
+      <button class="btn btn-op" onclick="setOp('multiplicacao')">×</button>
+
+      <button class="btn" onclick="digit('4')">4</button>
+      <button class="btn" onclick="digit('5')">5</button>
+      <button class="btn" onclick="digit('6')">6</button>
+      <button class="btn btn-op" onclick="setOp('subtracao')">−</button>
+
+      <button class="btn" onclick="digit('1')">1</button>
+      <button class="btn" onclick="digit('2')">2</button>
+      <button class="btn" onclick="digit('3')">3</button>
+      <button class="btn btn-op" onclick="setOp('soma')">+</button>
+
+      <button class="btn span2" onclick="digit('0')">0</button>
+      <button class="btn" onclick="dot()">.</button>
+      <button class="btn btn-eq" onclick="equals()">=</button>
+    </div>
+  </div>
+</div>
+
+<div id="historico">
+  <div class="hist-title">▸ HISTÓRICO</div>
+  <div id="lista"></div>
+</div>
+
+<script>
+  const URL_SERVER = 'http://localhost:5000';
+
+  let current = '0', previous = null, operator = null, justEqualed = false, expr = '';
+
+  const valEl  = document.getElementById('val');
+  const exprEl = document.getElementById('expr');
+
+  function update() { valEl.textContent = current; exprEl.textContent = expr; }
+
+  function digit(d) {
+    if (justEqualed) { current = d; expr = ''; justEqualed = false; }
+    else if (current === '0') current = d;
+    else current += d;
+    update();
+  }
+
+  function dot() {
+    if (!current.includes('.')) current += '.';
+    update();
+  }
+
+  function setOp(op) {
+    const s = { soma:'+', subtracao:'−', multiplicacao:'×', divisao:'÷' };
+    previous = current; operator = op;
+    expr = current + ' ' + s[op];
+    current = '0'; justEqualed = false;
+    update();
+  }
+
+  function clear_all() {
+    current = '0'; previous = null; operator = null;
+    justEqualed = false; expr = ''; update();
+  }
+
+  function toggleSign() { current = String(parseFloat(current) * -1); update(); }
+  function percent()    { current = String(parseFloat(current) / 100); update(); }
+
+  async function equals() {
+    if (!operator || previous === null) return;
+    try {
+      const res  = await fetch(URL_SERVER + '/calcular', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ a: parseFloat(previous), b: parseFloat(current), operacao: operator })
+      });
+      const dados = await res.json();
+      const s = { soma:'+', subtracao:'−', multiplicacao:'×', divisao:'÷' };
+      expr    = previous + ' ' + s[operator] + ' ' + current + ' =';
+      current = dados.erro ? dados.erro : String(dados.resultado);
+      justEqualed = true; operator = null; previous = null;
+      update(); carregarHistorico();
+    } catch (e) { current = 'OFFLINE'; update(); }
+  }
+
+  async function carregarHistorico() {
+    try {
+      const res  = await fetch(URL_SERVER + '/historico');
+      const lista = await res.json();
+      const el  = document.getElementById('lista');
+      const s   = { soma:'+', subtracao:'−', multiplicacao:'×', divisao:'÷' };
+      el.innerHTML = lista.slice(0, 8).map(r =>
+        `<div class="item"><span>${r.a} ${s[r.operacao]} ${r.b}</span><strong>= ${r.resultado}</strong></div>`
+      ).join('');
+    } catch (e) {}
+  }
+
+  carregarHistorico();
+</script>
+
+</body>
+</html>
