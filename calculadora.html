@@ -1,4 +1,4 @@
-html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
@@ -178,7 +178,8 @@ html<!DOCTYPE html>
 </div>
 
 <script>
-  const URL_SERVER = 'http://localhost:5000';
+  // URL relativa — funciona tanto no localhost quanto no Render
+  const URL_SERVER = '';
 
   let current = '0', previous = null, operator = null, justEqualed = false, expr = '';
 
@@ -229,7 +230,7 @@ html<!DOCTYPE html>
       current = dados.erro ? dados.erro : String(dados.resultado);
       justEqualed = true; operator = null; previous = null;
       update(); carregarHistorico();
-    } catch (e) { current = 'OFFLINE'; update(); }
+    } catch (e) { current = 'ERRO'; update(); }
   }
 
   async function carregarHistorico() {
